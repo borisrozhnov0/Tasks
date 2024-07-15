@@ -53,7 +53,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                         break;
                     }
             }
-            update();                                                               // Обнавление
+            update();                                                               // Обновление
         }
     }
     return false;
