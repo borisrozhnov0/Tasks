@@ -10,7 +10,7 @@
 
 Номер бита 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0
 
-1 слово    0   0  x  x  x  x  x  x  0  0  x  x  x  x  x  x
+1 слово      0   0  x  x  x  x  x  x  0  0  x  x  x  x  x  x
 
 2 слово    0   0  x  x  x  x  x  x  x  x  x  x  x  x  x  x
 
