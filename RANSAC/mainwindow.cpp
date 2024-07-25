@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "Line.h"
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -53,7 +54,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                         break;
                     }
             }
-            update();                                                               // Обновление
+            update();                                                               // Обнавление
         }
     }
     return false;
@@ -132,11 +133,7 @@ void MainWindow::Start()
         m->show();
         return;
     }
-    if(ui->checkAsync->isChecked())         // Проверка режима работы асинхронный/синхронный
-    {
-        StartAsync();
-        return;
-    }
+    /*
     auto dist = [](const QPoint &p1, const QPoint &p2, const QPoint &p)
     {
         double  A = 1/(double)(p2.x() - p1.x()),
@@ -171,9 +168,23 @@ void MainWindow::Start()
     unsigned int msec = time.msecsTo(QTime::currentTime());
     ui->label->setText(QString("Time: %1ms").arg(msec));
 
-    setline = true;
     line.setLine(p1.x(), p1.y(), p2.x(), p2.y());
     MainWindow::line_transform(line);
+    */
+
+
+
+    int inliner = ui->inlinerEdit->text().toInt();
+    double pecent = ui->PercentEdit->text().toDouble();
+    QTime time = QTime::currentTime();
+    Line l = ui->checkAsync->isChecked() ? Line::asyncRANSAC(lp, inliner, pecent)
+                                         : Line::RANSAC(lp, inliner, pecent);
+    unsigned int msec = time.msecsTo(QTime::currentTime());
+    ui->label->setText(QString("Time: %1ms").arg(msec));
+    QString s = QString::fromStdString(l.to_stdstr());
+    ui->Linefunc->setText(s);
+    line = l.tp_qline(20, 20, 500, 500);
+    setline = true;
     update();
 }
 

@@ -62,7 +62,7 @@
       <x>610</x>
       <y>30</y>
       <width>221</width>
-      <height>88</height>
+      <height>94</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -77,13 +77,6 @@
       <widget class="QRadioButton" name="radioButton_2">
        <property name="text">
         <string>Удалить</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkAsync">
-       <property name="text">
-        <string>Async</string>
        </property>
       </widget>
      </item>
@@ -106,9 +99,9 @@
     <property name="geometry">
      <rect>
       <x>640</x>
-      <y>210</y>
+      <y>300</y>
       <width>160</width>
-      <height>85</height>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -128,11 +121,58 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>140</y>
+      <width>221</width>
+      <height>152</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="RANSAC_set">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>inliner</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="inlinerEdit">
+       <property name="text">
+        <string>2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Percent</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="PercentEdit">
+       <property name="text">
+        <string>95.0</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkAsync">
+       <property name="text">
+        <string>Async</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
    <widget class="QLabel" name="Linefunc">
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>300</y>
+      <y>360</y>
       <width>431</width>
       <height>61</height>
      </rect>
@@ -153,7 +193,7 @@
      <x>0</x>
      <y>0</y>
      <width>969</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
