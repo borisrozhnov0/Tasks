@@ -1,0 +1,5 @@
+# Qt conf. files
+*.user
+
+# Build prg. dir
+build/

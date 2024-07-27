@@ -12,6 +12,7 @@
 #include <ctime>
 #include <thread>
 #include <mutex>
+
 class Line
 {
 public:
@@ -25,10 +26,11 @@ public:
     static Line RANSAC(const QList<QPoint> & l, int n, double percent);
     static Line asyncRANSAC(const QList<QPoint> & l, int inl, double percent);
     Line operator=(const QLine l){ return Line(l); }
+    double distance(const QVector<QPoint> & p);
+    double distance(const QPoint & p);
 protected:
     Line() = default;
-    double A,B,C;
-    double distance(const QVector<QPoint> & p);
+    double A, B, C;
 private:
 };
 

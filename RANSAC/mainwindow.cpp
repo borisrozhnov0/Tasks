@@ -126,6 +126,7 @@ void MainWindow::StartAsync()
 
 void MainWindow::Start()
 {
+    Line l(0,0,0,0);
     if(lp.size()<2)
     {
         QMessageBox * m = new QMessageBox;
@@ -133,54 +134,20 @@ void MainWindow::Start()
         m->show();
         return;
     }
-    /*
-    auto dist = [](const QPoint &p1, const QPoint &p2, const QPoint &p)
+    if(lp.size()==2)
     {
-        double  A = 1/(double)(p2.x() - p1.x()),
-                B = 1/ (double)(p1.y() - p2.y()),
-                C = (double)p1.y()/(double)(p2.y() - p1.y()) - (double)p1.x()/(double)(p2.x() - p1.x()),
-                SQRT = std::sqrt(A*A + B*B);
-        double ret = std::abs(A*p.x()+B*p.y()+C) / SQRT;
-        return ret;
-    };
-    QPoint p1, p2;
-    double min_dist = 1e16;
-    // Синхронный алгоритм аналогичен асинхронному
-    QTime time = QTime::currentTime();
-    for(auto it1 = lp.begin(); it1 != --lp.end(); it1++)
-    {
-        for(auto it2 = it1+1; it2 != lp.end(); it2++)
-        {
-            double tmp = 0;
-            for(auto it3 = lp.begin(); it3 != lp.end(); it3++)
-            {
-                if(it2==it3 || it1==it3) continue;
-                tmp += dist(*it1, *it2, *it3);
-            }
-            if(tmp < min_dist)
-            {
-                min_dist = tmp >0 ? tmp: min_dist;
-                p1 = *it1;
-                p2 = *it2;
-            }
-        }
+        l = Line(lp.first(), lp.last());
     }
-    unsigned int msec = time.msecsTo(QTime::currentTime());
-    ui->label->setText(QString("Time: %1ms").arg(msec));
-
-    line.setLine(p1.x(), p1.y(), p2.x(), p2.y());
-    MainWindow::line_transform(line);
-    */
-
-
-
-    int inliner = ui->inlinerEdit->text().toInt();
-    double pecent = ui->PercentEdit->text().toDouble();
-    QTime time = QTime::currentTime();
-    Line l = ui->checkAsync->isChecked() ? Line::asyncRANSAC(lp, inliner, pecent)
-                                         : Line::RANSAC(lp, inliner, pecent);
-    unsigned int msec = time.msecsTo(QTime::currentTime());
-    ui->label->setText(QString("Time: %1ms").arg(msec));
+    else
+    {
+        int inliner = ui->inlinerEdit->text().toInt();
+        double pecent = ui->PercentEdit->text().toDouble();
+        QTime time = QTime::currentTime();
+        l = ui->checkAsync->isChecked() ? Line::asyncRANSAC(lp, inliner, pecent)
+                                        : Line::RANSAC(lp, inliner, pecent);
+        unsigned int msec = time.msecsTo(QTime::currentTime());
+        ui->label->setText(QString("Time: %1ms").arg(msec));
+    }
     QString s = QString::fromStdString(l.to_stdstr());
     ui->Linefunc->setText(s);
     line = l.tp_qline(20, 20, 500, 500);

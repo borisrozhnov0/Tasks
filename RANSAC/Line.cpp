@@ -1,11 +1,8 @@
 #include "Line.h"
 
 Line::Line(const QPoint & p1, const QPoint & p2):Line(p1.x(), p1.y(), p2.x(), p2.y()){ }
-
 Line::Line(const QLine & l):Line(l.x1(), l.y1(), l.x2(), l.y2()){ }
-
 Line::Line(const Line & l):A(l.A),B(l.B), C(l.C){ }
-
 Line::Line(int x1, int y1, int x2, int y2)
 {
     if(x1 == x2)
@@ -34,10 +31,12 @@ std::string Line::to_stdstr()
     if(A)
     {
         str += std::to_string(A);
+        str += "x";
         if(B)
         {
             str += B < 0 ? " - " : " + ";
             str += std::to_string(std::abs(B));
+            str += "y";
         }
     }
     else
@@ -57,13 +56,13 @@ QLine Line::tp_qline(int x_min, int y_min, int x_max, int y_max)
 {
     if(!A)
     {
-        x_min = -C;
-        x_max = -C;
+        y_min = -C;
+        y_max = -C;
     }
     else if(!B)
     {
-        y_min = -C;
-        y_max = -C;
+        x_min = -C;
+        x_max = -C;
     }
     else
     {
@@ -84,6 +83,12 @@ QLine Line::tp_qline(int x_min, int y_min, int x_max, int y_max)
     return QLine(x_min, y_min, x_max, y_max);
 }
 
+double Line::distance(const QPoint & p)
+{
+    double SQRT = 1.0 / std::sqrt(A*A + B*B);
+    return std::abs(A * p.x() + B * p.y() + C) * SQRT;
+}
+
 double Line::distance(const QVector<QPoint> & v)
 {
     double _dst = 0.0, SQRT = 1.0 / std::sqrt(A*A + B*B);
@@ -94,7 +99,7 @@ double Line::distance(const QVector<QPoint> & v)
 Line Line::RANSAC(const QList<QPoint> & l, int inl, double percent)
 {
     Line ln;
-    QVector<QPoint> v(l);                       // Переводим спсиок точек в массив
+    QVector<QPoint> v(l);                                                       // Переводим спсиок точек в массив
 
     int n = v.size();
     int size = __comp(n,2);
