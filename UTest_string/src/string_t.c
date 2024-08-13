@@ -98,7 +98,9 @@ inline int max_size(string_t s) { return s.size - 1; }
  */
 inline char * at(const string_t s, int pos)
 {
-    return s.len >= pos ? NULL : s.val + pos;
+    if(pos < 0) return NULL;
+    else if(pos >= s.len) return NULL;
+    return s.val + pos;
 }
 
 /**
