@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.12 )
 
-project(utest_string LANGUAGES CXX)
+project(utest_string 
+    VERSION 1.0.0
+    LANGUAGES CXX)
 
 find_package(Boost 1.36.0)
 
