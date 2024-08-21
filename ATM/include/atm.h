@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-
 #include "libpq-fe.h"
 
 #ifndef DllExpor
@@ -19,6 +18,15 @@
 #endif
 
 
+enum class ATM_error
+{
+    disconnect,
+    wrong_card,
+    wrong_code,
+    card_block,
+    not_enough_money,
+    no_cash
+};
 
 class DllExpor ATM_MSG
 {
@@ -50,6 +58,7 @@ public:
 
 private:
     std::string vecToPQarrayStr(const std::vector<int> & v, int size);
+    std::string format(const char * src, ...);
     bool is_connect;
     int id;
     int AccountId, money;

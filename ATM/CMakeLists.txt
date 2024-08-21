@@ -25,7 +25,7 @@ target_link_libraries(main
     atm
 	${PROJECT_SOURCE_DIR}/lib/libpq.lib)
 
-install(FILES lib/libintl-9.dll 
+install(FILES lib/libintl-9.dll lib/libpq.dll
     DESTINATION ${PROJECT_SOURCE_DIR}/bin)
 
 install(TARGETS main atm

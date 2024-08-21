@@ -34,6 +34,7 @@ void  ATM::checkCard(int cardId, int cardCode)
         denom = intf.getDenom(4);
     }
     intf.disconnect();
+    _cardId = cardId;
 }
 
 void ATM::cashCheck()

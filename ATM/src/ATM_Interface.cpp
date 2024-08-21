@@ -1,5 +1,6 @@
 #include "atm.h"
 #include "libpq-fe.h"
+#include <stdarg.h>
 
  ATM_Interface::ATM_Interface(int id,
                   const char * host, int port,
@@ -23,41 +24,41 @@ ATM_Interface::~ATM_Interface()
 void ATM_Interface::connect()
 {
     conn = PQconnectdb(conninfo.c_str());
-    if(PQstatus(conn) == CONNECTION_OK) is_connect = true;
-    else std::cout << PQstatus(conn);
+    if(PQstatus(conn) == CONNECTION_OK) 
+        is_connect = true;
+    else 
+        throw ATM_error::disconnect;
 }
 
-    void ATM_Interface::disconnect()
+void ATM_Interface::disconnect()
+{
+    if(is_connect)
     {
-        if(is_connect)
-        {
-            is_connect = false;
-            PQfinish(conn);
-        }
+        is_connect = false;
+        PQfinish(conn);
     }
+}
 
-    bool ATM_Interface::isExistCard(int id)
-    {
-        std::string query = "SELECT id FROM card WHERE id = " 
-                          + std::to_string(id) + ";";
+bool ATM_Interface::isExistCard(int id)
+{
+    std::string query = format("SELECT id FROM card WHERE id = {i};", (int)id);
         
-        if(!is_connect) connect();
-        res = PQexec(conn, query.c_str());
-        bool ret = PQntuples(res) == 1 ? true : false;
-        PQclear(res);
+    if(!is_connect) connect();
+    res = PQexec(conn, query.c_str());
+    bool ret = PQntuples(res) ? true : false;
+    PQclear(res);
 
-        return ret;
-    }
+    return ret;
+}
 
     bool ATM_Interface::isCorrectCode(int id, int code)
     {
-        std::string query = "SELECT id FROM card WHERE id = " 
-                          + std::to_string(id) + " AND code = "
-                          + std::to_string(code) + ";";
+        std::string query = format("SELECT id FROM card WHERE id = {i} AND code = {i};", (int)id, (int)code);
+        /* "SELECT id FROM card WHERE id = " + std::to_string(id) + " AND code = " + std::to_string(code) + ";";*/
 
         if(!is_connect) connect();
         res = PQexec(conn, query.c_str());
-        bool ret = PQntuples(res) == 1 ? true : false;
+        bool ret = PQntuples(res) ? true : false;
         PQclear(res);
 
         return ret;                  
@@ -65,7 +66,8 @@ void ATM_Interface::connect()
 
     bool ATM_Interface::isActiveCard(int id)
     {
-        std::string query = "SELECT active FROM card WHERE id = " + std::to_string(id) + ";";
+        std::string query = format("SELECT active FROM card WHERE id = {i};", (int)id);
+        /*"SELECT active FROM card WHERE id = " + std::to_string(id) + ";";*/
 
         if(!is_connect) connect();
 
@@ -80,12 +82,8 @@ void ATM_Interface::connect()
 
     void ATM_Interface::setCash(const std::vector<int> & cash)
     {
-        std::string query = "UPDATE ATM SET cash = " 
-                          + vecToPQarrayStr(cash, 10) 
-                          + " WHERE id = " 
-                          + std::to_string(id) 
-                          + ";";
-    
+        std::string query = format("UPDATE ATM SET cash = {s} WHERE id = {i};", vecToPQarrayStr(cash, 10).c_str(), (int)id );
+        /*"UPDATE ATM SET cash = " + vecToPQarrayStr(cash, 10) + " WHERE id = " + std::to_string(id)  + ";";*/
         if(!is_connect) connect();
         res = PQexec(conn, query.c_str());
         PQclear(res);
@@ -94,9 +92,8 @@ void ATM_Interface::connect()
     int ATM_Interface::getMoney(int id)
     {
         int money = 0;
-        std::string query = "SELECT _money FROM Accounts WHERE id = (SELECT AccountId FROM card WHERE id = "
-                          + std::to_string(id)
-                          + ");",
+        std::string query = format("SELECT _money FROM Accounts WHERE id = (SELECT AccountId FROM card WHERE id = {i} );", (int)id),
+        /*"SELECT _money FROM Accounts WHERE id = (SELECT AccountId FROM card WHERE id = "+ std::to_string(id)+ ");",*/
                     response_str,
                     money_str;
 
@@ -118,7 +115,8 @@ void ATM_Interface::connect()
     std::vector<int> ATM_Interface::getCash(int size)
     {
         std::vector<int> _cash;
-        std::string query = {"SELECT cash FROM ATM WHERE id = " + std::to_string(id) + ";"},
+        std::string query = format("SELECT cash FROM ATM WHERE id = {i}", (int)id),
+        /*{"SELECT cash FROM ATM WHERE id = " + std::to_string(id) + ";"},*/
                     response_str;
         
         if(!is_connect) connect();
@@ -134,7 +132,7 @@ void ATM_Interface::connect()
                 _cash.push_back(std::stoi(buf));
                 buf.clear();
             }
-            else buf+= *it;
+            else buf += *it;
 
         return _cash;
     }
@@ -142,7 +140,7 @@ void ATM_Interface::connect()
     std::vector<int> ATM_Interface::getDenom(int size)
     {
         std::vector<int> _denom;
-        std::string query = {"SELECT denomination FROM ATM WHERE id = " + std::to_string(id) + ";"},
+        std::string query = format("SELECT denomination FROM ATM WHERE id = {i};", id),
                     response_str;
         
         if(!is_connect) connect();
@@ -162,13 +160,48 @@ void ATM_Interface::connect()
 
         return _denom;
     }
-    std::string ATM_Interface::vecToPQarrayStr(const std::vector<int> & v, int size)
-    {
-        std::string str = "ARRAY[";
-        for(int i : v) str += std::to_string(i) + ",";
-        for(int i = v.size(); i!= size; i++) str += "0,";
-        str.pop_back();
-        str += "]";
 
-        return str;
-    }
+std::string ATM_Interface::vecToPQarrayStr(const std::vector<int> & v, int size)
+{
+    std::string str = "ARRAY[";
+    for(int i : v) str += std::to_string(i) + ",";
+    for(int i = v.size(); i!= size; i++) str += "0,";
+    str.pop_back();
+    str += "]";
+
+    return str;
+}
+
+std::string ATM_Interface::format(const char * src, ...)
+{
+    va_list arg;
+    va_start(arg, src);
+    
+    std::string ret;
+    while(*src != '\0')
+        if(*src == '{')
+        {
+            src++;
+            if(*src == 'i')
+            {
+                src += 2;
+                ret += std::to_string(va_arg(arg, int));
+            }
+            else if(*src == 's')
+            {
+                src += 2;
+                ret += std::string(va_arg(arg, char*));
+            }
+            else
+            {
+                src += 2;
+                ret += std::string(va_arg(arg, char*));
+            }
+        }
+        else
+        ret += *src++;
+
+    va_end(arg);
+
+    return ret;
+}
