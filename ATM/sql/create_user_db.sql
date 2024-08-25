@@ -1,0 +1,2 @@
+CREATE DATABASE bank;
+CREATE ROLE atm_user WITH LOGIN PASSWORD 'password';
