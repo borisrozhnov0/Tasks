@@ -2,6 +2,7 @@
 #define ATM_H
 
 #pragma once
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -33,6 +34,7 @@ class DllExpor ATM_MSG
     public:
     const std::string HELLO{"INPUT"};
     std::string va_money(const std::vector<int> & cash, const std::vector<int> & denom);
+    std::string withdrawCash(const std::vector<int> & cash, const std::vector<int> & denom);
 };
 
 class DllExpor ATM_Interface
@@ -52,6 +54,7 @@ public:
     bool isActiveCard(int id);
 
     void setCash(const std::vector<int> & cash);
+    void setAccountMoney(int val, int cardId);
     int getMoney(int id);
     std::vector<int> getCash(int size);
     std::vector<int> getDenom(int size);
@@ -76,12 +79,19 @@ public:
     void checkCard(int cardId, int cardCode);
     void cashCheck();
     void setMoney(int i);
+    void withdrawCash(int total);
+
+    void setCash(const std::vector<int> & v);
+    void setDenomination(const std::vector<int> & v);
+    void setMaxMoney(int val);
 
 private:
-    std::vector<int> cash, denom;
+    std::vector<int> cash, 
+                     denom;
     ATM_Interface intf;
     ATM_MSG msg;
-    int _cardId, max_money;
+    int _cardId, 
+        max_money;
     bool correct_card;
 };
 

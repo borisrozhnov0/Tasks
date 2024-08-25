@@ -172,6 +172,14 @@ std::string ATM_Interface::vecToPQarrayStr(const std::vector<int> & v, int size)
     return str;
 }
 
+void ATM_Interface::setAccountMoney(int val, int cardId)
+{
+    std::string query = format("UPDATE Accounts SET _money = {i} WHERE id = (SELECT AccountId FROM card WHERE id = {i} );", val, cardId);
+    if(!is_connect) connect();
+    res = PQexec(conn, query.c_str());
+    PQclear(res);
+}
+
 std::string ATM_Interface::format(const char * src, ...)
 {
     va_list arg;

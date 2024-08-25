@@ -6,17 +6,13 @@
 #include <iostream>
 #include "atm.h"
 
-
-
-
-
-
-
 int
 main(int argc, char **argv)
 {
     ATM atm;
+
     atm.checkCard(1, 8080);
-    atm.cashCheck();
+    atm.withdrawCash(780);
+
     return 0;
 }

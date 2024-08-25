@@ -2,8 +2,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.12 )
 
 PROJECT(
     ATM 
-    VERSION 0.0.2 
+    VERSION 0.1.0 
     LANGUAGES CXX)
+
+set(LIBPQ_INLCUDE_PATH D:/Tools/pgsql/include)
 
 include_directories(    BEFORE
     ${PROJECT_SOURCE_DIR}/include
@@ -12,7 +14,7 @@ include_directories(    BEFORE
 
 add_library(atm SHARED
     ${PROJECT_SOURCE_DIR}/lib/libpq.lib
-    D:/Tools/pgsql/include/libpq-fe.h
+    ${LIBPQ_INLCUDE_PATH}/libpq-fe.h
     include/atm.h
     src/ATM_Interface.cpp 
     src/ATM_MSG.cpp 
